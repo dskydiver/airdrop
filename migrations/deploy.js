@@ -2,18 +2,24 @@
 // single deploy script that's invoked from the CLI, injecting a provider
 // configured from the workspace's Anchor.toml.
 
-import * as anchor from '@coral-xyz/anchor'
-import { Airdrop } from '../target/types/airdrop'
+const anchor = require('@coral-xyz/anchor')
+const IDL = require('../target/idl/airdrop.json')
 
-module.exports = async function (provider: anchor.Provider) {
+const programId = '7btnX5CoGiEwJBahdGUN1oKQvvpdQVWb5CU3zq9p7Msw'
+
+module.exports = async function (provider) {
   // Configure client to use the provider.
   anchor.setProvider(provider)
 
-  console.log(provider.publicKey)
+  console.log(provider.publicKey.toBase58())
 
-  // const program = anchor.workspace.Airdrop as anchor.Program<Airdrop>
+  const program = anchor.Program(
+    IDL,
+    new anchor.web3.PublicKey(programId),
+    provider
+  )
 
-  // console.log(program.programId)
+  console.log(program.programId.toBase58())
 
   // const [airdropData] = anchor.web3.PublicKey.findProgramAddressSync(
   //   [Buffer.from('airdrop_data')],

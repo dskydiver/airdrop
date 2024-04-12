@@ -24,12 +24,12 @@ ENV NODE_VERSION 18.20.1
 # https://github.com/creationix/nvm#install-script
 RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
 
-ENV NVM_DIR "$HOME/.nvm"
-RUN [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-RUN [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+ENV NVM_DIR "/root/.nvm"
 
 # install node, npm and yarn using nvm
-RUN nvm install $NODE_VERSION \
+RUN [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
+    && [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" \
+    && nvm install $NODE_VERSION \
     && nvm alias default $NODE_VERSION \
     && nvm use default \
     && npm install -g yarn

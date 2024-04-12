@@ -24,9 +24,11 @@ ENV NODE_VERSION 18.20.1
 # https://github.com/creationix/nvm#install-script
 RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
 
+# replace shell with bash so we can source files
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
 # install node, npm and yarn using nvm
-RUN source ~/.bashrc \
-    && nvm install $NODE_VERSION \
+RUN nvm install $NODE_VERSION \
     && nvm alias default $NODE_VERSION \
     && nvm use default \
     && npm install -g yarn

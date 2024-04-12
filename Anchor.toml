@@ -11,7 +11,7 @@ airdrop = "9phkZpkzQ4zm8YZ2degnhnTx7dhR6AUmgyBPTVSc4kNr"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster = "localnet"
 wallet = "/home/skydiver/.config/solana/id.json"
 
 [scripts]

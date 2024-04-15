@@ -4,6 +4,13 @@ WORKDIR /home/
 
 COPY . .
 
+# Install curl and Node.js
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g yarn
+
 RUN bash ./setup.sh
 
 ENV PATH="/root/.cargo/bin:$PATH"
@@ -16,13 +23,6 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 RUN avm install 0.29.0
 RUN avm use 0.29.0
-
-# Install curl and Node.js
-RUN apt-get update && \
-    apt-get install -y curl && \
-    curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs && \
-    npm install -g yarn
 
 # confirm installation
 RUN node -v

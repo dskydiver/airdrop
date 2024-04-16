@@ -1,7 +1,3 @@
 {
-  "prettier.semi": false,
-  "prettier.singleQuote": true,
-  "prettier.jsxSingleQuote": false,
-  "editor.formatOnSave": true,
-  "workbench.colorTheme": "Shades of Purple (Super Dark)"
+  "rust-analyzer.linkedProjects": ["./Cargo.toml"]
 }

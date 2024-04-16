@@ -4,12 +4,21 @@
 
 const anchor = require('@coral-xyz/anchor')
 const IDL = require('../target/idl/airdrop.json')
+const {
+  createAccount,
+  createMint,
+  getAssociatedTokenAddressSync,
+  mintTo,
+} = require('@solana/spl-token')
+const { Keypair, PublicKey, PublicKeyInitData } = require('@solana/web3.js')
 
 const programId = '9phkZpkzQ4zm8YZ2degnhnTx7dhR6AUmgyBPTVSc4kNr'
 
 module.exports = async function (provider) {
   // Configure client to use the provider.
   anchor.setProvider(provider)
+
+  const owner = anchor.Wallet.local()
 
   console.log(
     provider.publicKey.toBase58(),
@@ -22,7 +31,29 @@ module.exports = async function (provider) {
     provider
   )
 
-  console.log(program.programId.toBase58())
+  const tokenMint = await createMint(
+    provider.connection,
+    owner,
+    owner.publicKey,
+    null,
+    0
+  )
+
+  const sourceAccount = await createAccount(
+    anchor.getProvider().connection,
+    owner,
+    tokenMint,
+    owner.publicKey
+  )
+
+  await mintTo(
+    anchor.getProvider().connection,
+    owner,
+    tokenMint,
+    sourceAccount,
+    owner,
+    1000000000
+  )
 
   const [airdropData] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from('airdrop_data')],
@@ -36,19 +67,32 @@ module.exports = async function (provider) {
   const amount1 = new anchor.BN(100)
   const amount2 = new anchor.BN(100)
 
-  const mint = new anchor.web3.PublicKey(
-    '9phkZpkzQ4zm8YZ2degnhnTx7dhR6AUmgyBPTVSc4kNr'
-  )
-
   const tx = await program.methods
     .initialize(emitter_address, nft1, nft2, amount1, amount2)
     .accounts({
       airdropData,
-      payer: provider.publicKey,
-      mint,
+      payer: owner.publicKey,
+      mint: tokenMint,
     })
-    .signers([anchor.Wallet.local()])
+    .signers([owner])
     .rpc()
 
-  // Add your deploy script here.
+  const [destinationAccount] = PublicKey.findProgramAddressSync(
+    [Buffer.from('airdrop'), tokenMint.toBuffer()],
+    program.programId
+  )
+  
+  await program.methods
+    .deposit(new anchor.BN(1000000000))
+    .accounts({
+      airdropData,
+      payer: owner.publicKey,
+      sourceAccount,
+      destinationAccount,
+      mint: tokenMint,
+      tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    })
+    .signers([owner])
+    .rpc()
 }

@@ -12,18 +12,17 @@ const {
 } = require('@solana/spl-token')
 const { Keypair, PublicKey, PublicKeyInitData } = require('@solana/web3.js')
 
-const programId = '9phkZpkzQ4zm8YZ2degnhnTx7dhR6AUmgyBPTVSc4kNr'
+const secretKey = require('/root/.config/solana/id.json')
+
+const programId = '3YdJhNetHks6wBHey5YhNAHtrDxGnenkFaq3jnvjULzW'
 
 module.exports = async function (provider) {
   // Configure client to use the provider.
   anchor.setProvider(provider)
 
-  const owner = anchor.Wallet.local()
+  const owner = Keypair.fromSecretKey(Uint8Array.from(secretKey))
 
-  console.log(
-    provider.publicKey.toBase58(),
-    anchor.Wallet.local().publicKey.toBase58()
-  )
+  console.log(owner.publicKey.toBase58())
 
   const program = new anchor.Program(
     IDL,
@@ -38,6 +37,8 @@ module.exports = async function (provider) {
     null,
     0
   )
+
+  console.log('mint', tokenMint.toBase58())
 
   const sourceAccount = await createAccount(
     anchor.getProvider().connection,
@@ -60,12 +61,12 @@ module.exports = async function (provider) {
     program.programId
   )
 
-  const emitter_address = '0x00000000000000000000000000000000deadbeef'
-  const nft1 = '0x00000000000000000000000000000000deadbeef'
-  const nft2 = '0x00000000000000000000000000000000deadbeef'
+  const emitter_address = '0x81621cE0f8356143E214274b5628C7D8Ccb79f61'
+  const nft1 = '0xB52B6f8DcDb5a1F9b53A39f0F6a9Ef1E67B4A184'
+  const nft2 = '0x8096656497b12Cc5581303c986ed5c5824C9B85f'
 
-  const amount1 = new anchor.BN(100)
-  const amount2 = new anchor.BN(100)
+  const amount1 = new anchor.BN(10000)
+  const amount2 = new anchor.BN(10000)
 
   const tx = await program.methods
     .initialize(emitter_address, nft1, nft2, amount1, amount2)
@@ -81,7 +82,7 @@ module.exports = async function (provider) {
     [Buffer.from('airdrop'), tokenMint.toBuffer()],
     program.programId
   )
-  
+
   await program.methods
     .deposit(new anchor.BN(1000000000))
     .accounts({

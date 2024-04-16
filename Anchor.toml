@@ -5,7 +5,7 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-airdrop = "3228AYPtnPpozR5rP2DrDP6UFvVXweHLJuYX6VkKtnaP"
+airdrop = "3YdJhNetHks6wBHey5YhNAHtrDxGnenkFaq3jnvjULzW"
 
 [registry]
 url = "https://api.apr.dev"

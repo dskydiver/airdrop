@@ -5,13 +5,13 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-airdrop = "3YdJhNetHks6wBHey5YhNAHtrDxGnenkFaq3jnvjULzW"
+airdrop = "3pw4sNvB8qvq6vwE771MCiyvQ3dboBCJYTfPJe8kUYnM"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster = "devnet"
 wallet = "/root/.config/solana/id.json"
 
 [scripts]

@@ -11,10 +11,11 @@ const {
   mintTo,
 } = require('@solana/spl-token')
 const { Keypair, PublicKey, PublicKeyInitData } = require('@solana/web3.js')
+const { deriveAddress } = require('@certusone/wormhole-sdk/lib/cjs/solana')
 
 const secretKey = require('/root/.config/solana/id.json')
 
-const programId = '3YdJhNetHks6wBHey5YhNAHtrDxGnenkFaq3jnvjULzW'
+const programId = '3pw4sNvB8qvq6vwE771MCiyvQ3dboBCJYTfPJe8kUYnM'
 
 module.exports = async function (provider) {
   // Configure client to use the provider.
@@ -68,12 +69,30 @@ module.exports = async function (provider) {
   const amount1 = new anchor.BN(10000)
   const amount2 = new anchor.BN(10000)
 
+  function deriveForeignEmitterKey(
+    programId,
+    chain
+  ) {
+    return deriveAddress(
+      [
+        Buffer.from('foreign_emitter'),
+        (() => {
+          const buf = Buffer.alloc(2)
+          buf.writeUInt16LE(chain)
+          return buf
+        })(),
+      ],
+      programId
+    )
+  }
+
   const tx = await program.methods
-    .initialize(emitter_address, nft1, nft2, amount1, amount2)
+    .initialize(10002, emitter_address, nft1, nft2, amount1, amount2)
     .accounts({
       airdropData,
       payer: owner.publicKey,
       mint: tokenMint,
+      foreignEmitter: deriveForeignEmitterKey(program.programId, 10002),
     })
     .signers([owner])
     .rpc()

@@ -5,12 +5,28 @@ use wormhole_anchor_sdk::wormhole;
 use crate::{state::{AirdropData, ForeignEmitter}, AirdropError, AirdropMessage, ClaimStatus};
 
 #[derive(Accounts)]
+#[instruction(chain: u16)]
 pub struct Initialize<'info> {
     #[account(init, seeds = [b"airdrop_data".as_ref()], bump, space = 8 + 20 + 20 + 20 + 8 + 8 + 32 + 32 + 8, payer = payer)]
     pub airdrop_data: Account<'info, AirdropData>,
     #[account(mut)]
     pub payer: Signer<'info>,
     pub mint: Account<'info, Mint>,
+    #[account(
+        init,
+        payer = payer,
+        seeds = [
+            ForeignEmitter::SEED_PREFIX,
+            &chain.to_le_bytes()[..]
+        ],
+        bump,
+        space = ForeignEmitter::MAXIMUM_SIZE
+    )]
+    /// Foreign Emitter account. Create this account if an emitter has not been
+    /// registered yet for this Wormhole chain ID. If there already is an
+    /// emitter address saved in this account, overwrite it.
+    pub foreign_emitter: Account<'info, ForeignEmitter>,
+
     pub system_program: Program<'info, System>,
 }
 

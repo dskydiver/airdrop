@@ -137,6 +137,7 @@ describe('airdrop', () => {
   it('Is initialized!', async () => {
     const tx = await program.methods
       .initialize(
+        2,
         '0x00000000000000000000000000000000deadbeef',
         '0xa5c0bd78d1667c13bfb403e2a3336871396713c5',
         '0xa5c0bd78d1667c13bfb403e2a3336871396713c5',
@@ -147,6 +148,10 @@ describe('airdrop', () => {
         airdropData,
         payer: owner.publicKey,
         mint: tokenMint,
+        foreignEmitter: deriveForeignEmitterKey(
+          program.programId,
+          2,
+        )
       })
       .signers([owner])
       .rpc()

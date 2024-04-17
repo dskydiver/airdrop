@@ -184,10 +184,12 @@ describe('airdrop', () => {
 
   it('Claim!', async () => {
     const parsed = parseVaa(signedMsg)
+    const buf = Buffer.alloc(2)
+    buf.writeUInt16BE(12345)
     const [claimStatus] = PublicKey.findProgramAddressSync(
       [
-        Buffer.from('claim_status'),
         Buffer.from('a5c0bd78d1667c13bfb403e2a3336871396713c5', 'hex'),
+        buf
       ],
       program.programId
     )
@@ -195,7 +197,7 @@ describe('airdrop', () => {
     const ataAccount = getAssociatedTokenAddressSync(tokenMint, owner.publicKey)
 
     const tx = await program.methods
-      .claim('0xa5c0bd78d1667c13bfb403e2a3336871396713c5', 12345, [
+      .claim([...Buffer.from('a5c0bd78d1667c13bfb403e2a3336871396713c5', 'hex')], 12345, [
         ...parsed.hash,
       ])
       .accounts({

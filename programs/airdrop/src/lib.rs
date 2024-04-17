@@ -13,7 +13,7 @@ pub mod message;
 pub mod state;
 pub mod utils;
 
-declare_id!("3pw4sNvB8qvq6vwE771MCiyvQ3dboBCJYTfPJe8kUYnM");
+declare_id!("64w7cCF6x8iVp2qD7f1PyeMKT1CTMwwvHUASfjYnbo52");
 
 #[program]
 pub mod airdrop {
@@ -48,8 +48,7 @@ pub mod airdrop {
         // Save the emitter info into the ForeignEmitter account.
         let emitter = &mut ctx.accounts.foreign_emitter;
         emitter.chain = chain;
-        emitter.address =
-           ethereum_address_str_to_u8_32(emitter_address.clone()).unwrap();
+        emitter.address = ethereum_address_str_to_u8_32(emitter_address.clone()).unwrap();
 
         airdrop_data.emitter_address =
             <[u8; 20]>::from_hex(emitter_address.trim_start_matches("0x")).unwrap();
@@ -81,16 +80,10 @@ pub mod airdrop {
         Ok(())
     }
 
-    pub fn claim(ctx: Context<Claim>, nft: String, id: u16, vaa_hash: [u8; 32]) -> Result<()> {
+    pub fn claim(ctx: Context<Claim>, nft: [u8; 20], id: u16, vaa_hash: [u8; 32]) -> Result<()> {
         let posted_message = &ctx.accounts.posted;
 
-        require!(
-            is_valid_ethereum_address(nft.clone()),
-            AirdropError::InvalidNFTAddress
-        );
-
-        let nft_address = <[u8; 20]>::from_hex(&nft[2..]).unwrap();
-
+        let nft_address = nft;
         let nft_id = id;
 
         let airdrop_data = &ctx.accounts.airdrop_data;

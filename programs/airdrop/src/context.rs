@@ -46,7 +46,7 @@ pub struct Deposit<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(nft: String, id: u16, vaa_hash: [u8; 32])]
+#[instruction(nft: [u8; 20], id: u16, vaa_hash: [u8; 32])]
 pub struct Claim<'info> {
     // Wormhole program.
     pub wormhole_program: Program<'info, wormhole::program::Wormhole>,
@@ -79,7 +79,7 @@ pub struct Claim<'info> {
     #[account(seeds = [b"airdrop_data".as_ref()], bump, constraint = airdrop_data.mint == mint.key())]
     pub airdrop_data: Account<'info, AirdropData>,
 
-    #[account(init, seeds = [b"claim_status", nft.as_bytes().as_ref(), id.to_be_bytes().as_ref()], bump, payer = payer, space = 8 + 32 + 20 + 2 + 1)]
+    #[account(init, seeds = [nft.as_ref(), id.to_be_bytes().as_ref()], bump, payer = payer, space = 8 + 32 + 20 + 2 + 1)]
     pub claim_status: Account<'info, ClaimStatus>,
     #[account(mut)]
     pub payer: Signer<'info>,

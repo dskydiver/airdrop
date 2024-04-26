@@ -15,7 +15,7 @@ const { deriveAddress } = require('@certusone/wormhole-sdk/lib/cjs/solana')
 
 const secretKey = require('/root/.config/solana/id.json')
 
-const programId = '64w7cCF6x8iVp2qD7f1PyeMKT1CTMwwvHUASfjYnbo52'
+const programId = 'HWPt83kCd84ADojQ3naUHDNBScwaYufoTCiJhKPR5MjL'
 
 module.exports = async function (provider) {
   // Configure client to use the provider.

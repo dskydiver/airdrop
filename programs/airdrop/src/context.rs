@@ -69,7 +69,7 @@ pub struct Claim<'info> {
             &posted.emitter_chain().to_le_bytes()[..]
         ],
         bump,
-        constraint = foreign_emitter.verify(posted.emitter_address()) @ AirdropError::InvalidForeignEmitter
+        constraint = foreign_emitter.verify(posted.emitter_address()) @ AirdropError::InvalidNFTAddress
     )]
     /// Foreign emitter account. The posted message's `emitter_address` must
     /// agree with the one we have registered for this message's `emitter_chain`

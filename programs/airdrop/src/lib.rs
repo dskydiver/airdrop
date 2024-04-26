@@ -13,7 +13,7 @@ pub mod message;
 pub mod state;
 pub mod utils;
 
-declare_id!("64w7cCF6x8iVp2qD7f1PyeMKT1CTMwwvHUASfjYnbo52");
+declare_id!("HWPt83kCd84ADojQ3naUHDNBScwaYufoTCiJhKPR5MjL");
 
 #[program]
 pub mod airdrop {
@@ -88,11 +88,13 @@ pub mod airdrop {
 
         let airdrop_data = &ctx.accounts.airdrop_data;
 
-        let emitter_address = posted_message.emitter_address();
+        let foreign_emitter = &ctx.accounts.foreign_emitter;
+
+        let chain = posted_message.emitter_chain();
 
         require!(
-            emitter_address[12..] == airdrop_data.emitter_address,
-            AirdropError::InvalidForeignEmitter
+            chain == foreign_emitter.chain,
+            AirdropError::InvalidForeignEmitterChain
         );
 
         let AirdropMessage { account, nft, id } = posted_message.data();

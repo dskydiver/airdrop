@@ -6,6 +6,8 @@ pub enum AirdropError {
     InvalidNFTAddress,
     #[msg("InvalidForeignEmitter")]
     InvalidForeignEmitter,
+    #[msg("InvalidForeignEmitterChain")]
+    InvalidForeignEmitterChain,
     #[msg("Drop already claimed.")]
     DropAlreadyClaimed,
     #[msg("InvalidMessage")]
